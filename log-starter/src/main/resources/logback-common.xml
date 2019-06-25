@@ -1,0 +1,50 @@
+<included>
+    <conversionRule conversionWord="qcLog" converterClass="com.mornsnow.starter.log.QcConverter"/>
+    <property resource="logback.properties"/>
+    <property resource="application.properties"/>
+
+    <appender name="TRACE_APPENDER" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${LOGSTASH_HOST_TRACE_WITH_PORT:-logstash-datahub.logservice:5000}</destination>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp/>
+                <version/>
+                <pattern>
+                    <pattern>
+                        {${trace}}
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+    </appender>
+
+
+    <!--  KIBANA APPENDER  -->
+    <appender name="STASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${LOGSTASH_HOST_WITH_PORT:-logstash.logservice:5000}</destination>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp/>
+                <version/>
+                <pattern>
+                    <pattern>{${stash}}</pattern>
+                </pattern>
+            </providers>
+        </encoder>
+    </appender>
+    <!--  控制台输出日志  -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${stdout}</pattern>
+        </layout>
+    </appender>
+
+    <logger name="TRACE" level="ERROR" additivity = "false">
+        <appender-ref ref="TRACE_APPENDER"/>
+    </logger>
+    <root level="${logging.level.root:-warn}">
+        <appender-ref ref="STASH"/>
+        <appender-ref ref="STDOUT"/>
+    </root>
+</included>
+
