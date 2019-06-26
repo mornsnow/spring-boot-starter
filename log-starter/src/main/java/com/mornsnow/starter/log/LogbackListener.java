@@ -12,8 +12,8 @@ import javax.servlet.ServletContextListener;
 
 /**
  * @author jianyang 2019/3/26
- *         <p>
- *         说明：解决logback配置加载顺序导致的logback配置加载时获取不到环境变量的问题
+ * <p>
+ * 说明：解决logback配置加载顺序导致的logback配置加载时获取不到环境变量的问题
  */
 @Component
 public class LogbackListener implements ServletContextListener, EnvironmentAware {
@@ -25,11 +25,11 @@ public class LogbackListener implements ServletContextListener, EnvironmentAware
         System.setProperty("logGroup", logGroup);
 
         //设置LOGSTASH_HOST
-        String logstashHost = env.getProperty("LOGSTASH_HOST_WITH_PORT");
+        String logstashHost = env.getProperty("LOGSTASH_HOST_WITH_PORT", "127.0.0.1:5000");
         System.setProperty("LOGSTASH_HOST_WITH_PORT", logstashHost);
 
         //设置LOGSTASH_HOST
-        String logstashHostTrace = env.getProperty("LOGSTASH_HOST_TRACE_WITH_PORT");
+        String logstashHostTrace = env.getProperty("LOGSTASH_HOST_TRACE_WITH_PORT", "127.0.0.1:5000");
         System.setProperty("LOGSTASH_HOST_TRACE_WITH_PORT", logstashHostTrace);
 
         //预留5个字段，方便扩展
@@ -40,7 +40,7 @@ public class LogbackListener implements ServletContextListener, EnvironmentAware
         System.setProperty("column5", env.getProperty("column5", "-"));
 
         LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-        //lc.reset();
+        lc.reset();
     }
 
     @Override
